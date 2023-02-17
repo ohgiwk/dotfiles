@@ -1,0 +1,8 @@
+[user]
+    email = ohagi2149@gmail.com
+    name = Keiya Watanabe
+[core]
+    #
+    autocrlf = input
+    # 大文字・小文字を無視する
+    ignorecase = false
