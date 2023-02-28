@@ -1,8 +1,28 @@
+[init]
+    defaultbranch = main
+
 [user]
     email = ohagi2149@gmail.com
     name = Keiya Watanabe
+
 [core]
-    #
+    # 改行コードの変換するか
+    # 設定   チェックアウト時 コミット時
+    # true   LF -> CRLF	      CRLF -> LF
+    # input  変換しない	      CRLF -> LF
+    # false  変換しない	      変換しない
     autocrlf = input
+
     # 大文字・小文字を無視する
     ignorecase = false
+    # デフォルトで使用するエディタを指定する
+    editor = vim
+    # 日本語をエンコードしない
+    quotepath = false
+
+[color]
+    ui = true
+
+[pull]
+    # pullマージの仕方を指定 false / true
+    rebase = false
