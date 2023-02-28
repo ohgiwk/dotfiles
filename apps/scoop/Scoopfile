@@ -1,0 +1,141 @@
+{
+    "buckets": [
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras",
+            "Updated": {
+                "value": "\/Date(1673915587000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2023年1月17日 9:33:07"
+            },
+            "Manifests": 1756
+        },
+        {
+            "Name": "java",
+            "Source": "https://github.com/ScoopInstaller/Java",
+            "Updated": {
+                "value": "\/Date(1673918121000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2023年1月17日 10:15:21"
+            },
+            "Manifests": 254
+        },
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main",
+            "Updated": {
+                "value": "\/Date(1673915577000)\/",
+                "DisplayHint": 2,
+                "DateTime": "2023年1月17日 9:32:57"
+            },
+            "Manifests": 1142
+        }
+    ],
+    "apps": [
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "7zip",
+            "Version": "21.07",
+            "Updated": "\/Date(1654135540494)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "busybox",
+            "Version": "4716-g31467ddfc",
+            "Updated": "\/Date(1658395552224)\/"
+        },
+        {
+            "Info": "",
+            "Source": null,
+            "Name": "firefox",
+            "Version": "107.0.1",
+            "Updated": "\/Date(1676509019686)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "git",
+            "Version": "2.36.1.windows.1",
+            "Updated": "\/Date(1654135551586)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "ios-webkit-debug-proxy",
+            "Version": "1.8.8",
+            "Updated": "\/Date(1667535591130)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "mysql-workbench",
+            "Version": "8.0.30",
+            "Updated": "\/Date(1660796662386)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "pyenv",
+            "Version": "2.64.11",
+            "Updated": "\/Date(1654645254959)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "rustup",
+            "Version": "1.25.1",
+            "Updated": "\/Date(1670578328351)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sass",
+            "Version": "1.53.0",
+            "Updated": "\/Date(1656998703169)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sed",
+            "Version": "4.8",
+            "Updated": "\/Date(1658385459124)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "starship",
+            "Version": "1.10.3",
+            "Updated": "\/Date(1664244620841)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "sudo",
+            "Version": "0.2020.01.26",
+            "Updated": "\/Date(1661252579450)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "vagrant",
+            "Version": "2.3.0",
+            "Updated": "\/Date(1664271113359)\/"
+        },
+        {
+            "Info": "",
+            "Source": "main",
+            "Name": "vim",
+            "Version": "9.0",
+            "Updated": "\/Date(1664857665496)\/"
+        },
+        {
+            "Info": "",
+            "Source": "extras",
+            "Name": "vivaldi",
+            "Version": "5.6.2867.58",
+            "Updated": "\/Date(1673922454616)\/"
+        }
+    ]
+}
