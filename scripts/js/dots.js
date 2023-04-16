@@ -29,7 +29,7 @@ const CONFIGS = {
   zsh: [
     {
       fileNames: [".zshrc", ".zshenv", ".zprofile"],
-      src: "../../configs/zsh/",
+      src: "../../configs/shell/zsh/",
       dst: `${USER_HOME}/`,
     },
   ],
