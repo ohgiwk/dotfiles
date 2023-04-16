@@ -5,22 +5,24 @@
 #################################
 
 export LANG=ja_JP.UTF-8     # Locale指定
-export TERM=xterm-256color  #
+export TERM=xterm-256color  # ターミナルの色を256色にする
 export EDITOR=vim           # 既定のエディタを指定する
 
+# Java
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+# Android
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
+# Golang
 export GOPATH=$HOME/.go
 export GOROOT=$HOME/.goenv/versions/1.9/
+# PostgreSQL
 export PGDATA=/usr/local/var/postgres
 
 # Dart pub global activate
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-
+# オリジナルのbinフォルダ
 export PATH="$HOME/bin:$PATH"
 
 # cdpath=(.. ~)
@@ -94,17 +96,7 @@ function showoptions() {
 }
 
 
-################################
-# バージョン管理ツール
-################################
 
-# SDKMAN
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-
-# Jabba
-[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
-export PATH="$PATH:$HOME/Library/PackageManager/bin"
 
 
 
@@ -162,27 +154,33 @@ alias cat="bat"
 #alias find="fd"
 #alias grep="rg" # ripgrep
 
-
-
-### Added by Zinit's installer
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
-        print -P "%F{160} The clone has failed.%f%b"
+################################
+# バージョン管理ツール
+################################
+# asdf
+# asdfコマンドがあったら、asdfの設定を読み込む
+if [ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]; then
+  . /opt/homebrew/opt/asdf/libexec/asdf.sh
 fi
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+# Volta
+# Voltaコマンドがあったら、Voltaの設定を読み込む
+if [ -f "$HOME/.volta/bin/volta" ]; then
+  export VOLTA_HOME="$HOME/.volta"
+  export PATH="$VOLTA_HOME/bin:$PATH"
+fi
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
+# SDKMAN
+# sdkコマンドがあったら、SDKMANの設定を読み込む
+if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+  export SDKMAN_DIR="$HOME/.sdkman"
+  source "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 
-### End of Zinit's installer chunk
+# Jabba
+# Jabbaコマンドがあったら、Jabbaの設定を読み込む
+if [ -s "$HOME/.jabba/jabba.sh" ]; then
+  export PATH="$PATH:$HOME/Library/PackageManager/bin"
+  source "$HOME/.jabba/jabba.sh"
+fi
