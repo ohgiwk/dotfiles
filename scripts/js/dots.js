@@ -7,85 +7,160 @@ const USER_HOME =
   process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"];
 
 const CONFIGS = {
-  git: {
-    fileName: ".gitconfig",
-    src: "../../configs/git/",
-    dst: `${USER_HOME}/`,
-  },
-  zsh: {
-    fileName: ".zshrc",
-    src: "../../configs/zsh/",
-    dst: `${USER_HOME}/`,
-  },
-  vim: {
-    fileName: ".vimrc",
-    src: "../../configs/vim/",
-    dst: `${USER_HOME}/`,
-  },
+  test: [
+    {
+      fileNames: [".testrc", ".testenv"],
+      src: "../../configs/test/src",
+      dst: "../../configs/test/dst",
+    },
+    {
+      fileNames: [".testprofile"],
+      src: "../../configs/test/src",
+      dst: "../../configs/test/dst",
+    },
+  ],
+  git: [
+    {
+      fileNames: [".gitconfig"],
+      src: "../../configs/git/",
+      dst: `${USER_HOME}/`,
+    },
+  ],
+  zsh: [
+    {
+      fileNames: [".zshrc", ".zshenv", ".zprofile"],
+      src: "../../configs/zsh/",
+      dst: `${USER_HOME}/`,
+    },
+  ],
+  vim: [
+    {
+      fileNames: [".vimrc"],
+      src: "../../configs/vim/",
+      dst: `${USER_HOME}/`,
+    },
+  ],
 };
 
 /**
- *
+ * 設定ファイルをデプロイする
  * @param {string} name
  */
 function deploy(name) {
-  const { src, dst, fileName } = CONFIGS[name];
-  const srcPath = path.resolve(__dirname, src, fileName);
-  const dstPath = path.resolve(dst, fileName);
-  // 存在チェック
-  if (fs.existsSync(srcPath) && !fs.existsSync(dstPath)) {
-    // 存在しない場合はシンボリックリンクを作成
-    fs.symlinkSync(srcPath, dstPath);
+  const configs = CONFIGS[name];
 
-    console.log(`${name} config deployed!`);
-    console.log(`filePath: ${dstPath}`);
-  } else {
-    // 存在する場合は何もしない
-    console.log(`The ${fileName} is already exists`);
-    console.log(``);
-    console.log(`filePath: ${dstPath}`);
-  }
+  configs.forEach(({ src, dst, fileNames }) => {
+    const files = fileNames
+      .map((fileName) => ({
+        fileName,
+        srcPath: path.resolve(__dirname, src, fileName),
+        dstPath: path.resolve(dst, fileName),
+      }))
+      // 存在チェック
+      .map((file) => ({
+        ...file,
+        srcExists: fs.existsSync(file.srcPath),
+        dstExists: fs.existsSync(file.dstPath),
+      }));
+
+    // 存在チェック
+    // コピー元が存在し、コピー先が存在しない場合はtrue
+    if (files.every(({ srcExists, dstExists }) => srcExists && !dstExists)) {
+      // 存在しない場合はシンボリックリンクを作成
+      files.forEach(({ srcPath, dstPath }) => {
+        fs.symlinkSync(srcPath, dstPath);
+      });
+
+      console.log(`${name} config deployed!`);
+      files.forEach(({ dstPath }) => {
+        console.log(`filePath: ${dstPath}`);
+      });
+    } else {
+      files.map(({ fileName, srcExists, srcPath, dstExists, dstPath }) => {
+        // コピー元ファイルが存在しない場合はエラーを出力
+        if (!srcExists) {
+          console.log(`The ${fileName} does not exists`);
+          console.log(`filePath: ${srcPath}`);
+        }
+        // コピー先ファイルが存在する場合はエラーを出力
+        if (dstExists) {
+          console.log(`The ${fileName} is already exists`);
+          console.log(`filePath: ${dstPath}`);
+        }
+      });
+    }
+  });
 }
 /**
- *
+ * 設定ファイルを削除する
  * @param {string} name
  */
 function remove(name) {
-  const { dst, fileName } = CONFIGS[name];
+  const configs = CONFIGS[name];
+  configs.forEach(({ dst, fileNames }) => {
+    const files = fileNames
+      .map((fileName) => ({
+        fileName,
+        dstPath: path.resolve(dst, fileName),
+      }))
+      // 各ファイルの存在チェック
+      .map((file) => ({
+        ...file,
+        dstExists: fs.existsSync(file.dstPath),
+      }));
 
-  // 存在チェック
-  const filePath = path.resolve(dst, fileName);
+    // 全ての設定ファイルが存在するかをチェック
+    if (files.every(({ dstExists }) => dstExists)) {
+      // 存在する場合は削除
+      files.forEach(({ dstPath }) => {
+        fs.unlinkSync(dstPath);
+      });
 
-  if (fs.existsSync(filePath)) {
-    // 存在する場合は削除
-    fs.unlinkSync(filePath);
-    console.log(`${name} config removed!`);
-    console.log(`filePath: ${filePath}`);
-  } else {
-    // 存在しない場合は何もしない
-    console.log(`${fileName} does not exists`);
-    console.log(``);
-    console.log(`filePath: ${filePath}`);
-  }
+      console.log(`${name} config removed!`);
+      files.forEach(({ dstPath }) => {
+        console.log(`filePath: ${dstPath}`);
+      });
+    } else {
+      // 存在しない場合は何もしない
+      files.forEach(({ fileName, dstExists, dstPath }) => {
+        if (!dstExists) {
+          console.log(`${fileName} does not exists`);
+          console.log(``);
+          console.log(`filePath: ${dstPath}`);
+        }
+      });
+    }
+  });
 }
 /**
- *
+ * 設定ファイルの状態を確認する
  * @param {string} name
  */
 function status(name) {
-  const { dst, fileName } = CONFIGS[name];
+  const configs = CONFIGS[name];
+  configs.forEach(({ dst, fileNames }) => {
+    // 設定ファイルが存在するかをチェック
+    const files = fileNames
+      .map((fileName) => ({
+        fileName,
+        dstPath: path.resolve(dst, fileName),
+      }))
+      // 各ファイルの存在チェック
+      .map((file) => ({
+        ...file,
+        dstExists: fs.existsSync(file.dstPath),
+      }));
 
-  // 設定ファイルが存在するかをチェック
-  const filePath = path.resolve(dst, fileName);
-  if (fs.existsSync(filePath)) {
-    console.log(`${fileName} is exists`);
-    console.log(``);
-    console.log(`filePath: ${filePath}`);
-  } else {
-    console.log(`${fileName} does not exist`);
-    console.log(``);
-    console.log(`filePath: ${filePath}`);
-  }
+    files.forEach(({ fileName, dstExists, dstPath }) => {
+      if (dstExists) {
+        console.log(`${fileName} is exists`);
+      } else {
+        console.log(`${fileName} does not exist`);
+      }
+      console.log(`filePath: ${dstPath}`);
+      console.log(``);
+    });
+  });
 }
 
 yargs
