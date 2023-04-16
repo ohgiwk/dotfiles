@@ -163,6 +163,50 @@ function status(name) {
   })
 }
 
+function backup(name) {
+  const configs = CONFIGS[name]
+  configs.forEach(({ dst, fileNames }) => {
+    // 設定ファイルが存在するかをチェック
+    const files = fileNames
+      .map((fileName) => ({
+        fileName,
+        dstPath: path.resolve(dst, fileName),
+      }))
+      // 各ファイルの存在チェック
+      .map((file) => ({
+        ...file,
+        dstExists: fs.existsSync(file.dstPath),
+      }))
+
+    // ファイルが全て存在したら
+    if (files.every(({ dstExists }) => dstExists)) {
+      // .dots/backupフォルダの下にフォルダを作成
+      if (!fs.existsSync(`${USER_HOME}/.dots/backup/${name}`)) {
+        fs.mkdirSync(`${USER_HOME}/.dots/backup/${name}`, {
+          recursive: true,
+        })
+      }
+
+      // ファイルをコピー
+      files.forEach(({ fileName, dstPath }) => {
+        fs.copyFileSync(
+          dstPath,
+          `${USER_HOME}/.dots/backup/${name}/${fileName}`
+        )
+        // ログを出力
+        console.log(`${fileName} is backuped`)
+      })
+    } else {
+      files.forEach(({ fileName, dstExists, dstPath }) => {
+        if (!dstExists) {
+          console.log(`${fileName} does not exists`)
+          console.log(`filePath: ${dstPath}`)
+        }
+      })
+    }
+  })
+}
+
 yargs
   .command(
     "deploy <name>",
@@ -206,6 +250,22 @@ yargs
       status(argv.name)
     }
   )
+  // backup
+  .command(
+    "backup <name>",
+    "backup the config",
+    (yargs) => {
+      yargs.positional("name", {
+        describe: "application name",
+        type: "string",
+      })
+    },
+    (argv) => {
+      // @ts-ignore
+      backup(argv.name)
+    }
+  )
+
   .demandCommand(1, "At least one command is required")
   .strict()
   .parse()
