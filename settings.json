@@ -1,0 +1,42 @@
+{
+  "test": [
+    {
+      "fileNames": [".testrc", ".testenv"],
+      "src": "../../configs/test/src",
+      "dst": "../../configs/test/dst"
+    },
+    {
+      "fileNames": [".testprofile"],
+      "src": "../../configs/test/src",
+      "dst": "../../configs/test/dst"
+    }
+  ],
+  "git": [
+    {
+      "fileNames": [".gitconfig"],
+      "src": "../../configs/git/",
+      "dst": "~"
+    }
+  ],
+  "zsh": [
+    {
+      "fileNames": [".zshrc", ".zshenv", ".zprofile"],
+      "src": "../../configs/shell/zsh/",
+      "dst": "~"
+    }
+  ],
+    "starship": [
+    {
+      "fileNames": [".starship.toml"],
+      "src": "../../configs/shell/starship/",
+      "dst": "~/.config/"
+    }
+  ],
+  "vim": [
+    {
+      "fileNames": [".vimrc"],
+      "src": "../../configs/vim/",
+      "dst": "~"
+    }
+  ]
+}

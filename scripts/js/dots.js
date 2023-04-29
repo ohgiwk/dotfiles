@@ -6,48 +6,12 @@ const yargs = require("yargs")
 const USER_HOME =
   process.env[process.platform == "win32" ? "USERPROFILE" : "HOME"]
 
-const CONFIGS = {
-  test: [
-    {
-      fileNames: [".testrc", ".testenv"],
-      src: "../../configs/test/src",
-      dst: "../../configs/test/dst",
-    },
-    {
-      fileNames: [".testprofile"],
-      src: "../../configs/test/src",
-      dst: "../../configs/test/dst",
-    },
-  ],
-  git: [
-    {
-      fileNames: [".gitconfig"],
-      src: "../../configs/git/",
-      dst: `${USER_HOME}/`,
-    },
-  ],
-  zsh: [
-    {
-      fileNames: [".zshrc", ".zshenv", ".zprofile"],
-      src: "../../configs/shell/zsh/",
-      dst: `${USER_HOME}/`,
-    },
-  ],
-  vim: [
-    {
-      fileNames: [".vimrc"],
-      src: "../../configs/vim/",
-      dst: `${USER_HOME}/`,
-    },
-  ],
-}
-
 /**
  * 設定ファイルをデプロイする
  * @param {string} name
  */
-function deploy(name) {
-  const configs = CONFIGS[name]
+function deploy(name, settings) {
+  const configs = settings[name]
 
   configs.forEach(({ src, dst, fileNames }) => {
     const files = fileNames
@@ -95,8 +59,8 @@ function deploy(name) {
  * 設定ファイルを削除する
  * @param {string} name
  */
-function remove(name) {
-  const configs = CONFIGS[name]
+function remove(name, settings) {
+  const configs = settings[name]
   configs.forEach(({ dst, fileNames }) => {
     const files = fileNames
       .map((fileName) => ({
@@ -136,8 +100,8 @@ function remove(name) {
  * 設定ファイルの状態を確認する
  * @param {string} name
  */
-function status(name) {
-  const configs = CONFIGS[name]
+function status(name, settings) {
+  const configs = settings[name]
   configs.forEach(({ dst, fileNames }) => {
     // 設定ファイルが存在するかをチェック
     const files = fileNames
@@ -163,8 +127,8 @@ function status(name) {
   })
 }
 
-function backup(name) {
-  const configs = CONFIGS[name]
+function backup(name, settings) {
+  const configs = settings[name]
   configs.forEach(({ dst, fileNames }) => {
     // 設定ファイルが存在するかをチェック
     const files = fileNames
@@ -207,6 +171,19 @@ function backup(name) {
   })
 }
 
+function getSettings() {
+  const setting_path = path.resolve(__dirname, "../../settings.json")
+  const settings = require(setting_path)
+
+  Object.keys(settings).forEach((key) => {
+    Object.entries(settings[key]).forEach(([key2, value]) => {
+      settings[key][key2] + value.replace("~", USER_HOME)
+    })
+  })
+
+  return settings
+}
+
 yargs
   .command(
     "deploy <name>",
@@ -218,8 +195,9 @@ yargs
       })
     },
     (argv) => {
+      const settings = getSettings()
       // @ts-ignore
-      deploy(argv.name)
+      deploy(argv.name, settings)
     }
   )
   .command(
@@ -232,8 +210,9 @@ yargs
       })
     },
     (argv) => {
+      const settings = getSettings()
       // @ts-ignore
-      remove(argv.name)
+      remove(argv.name, settings)
     }
   )
   .command(
@@ -246,8 +225,9 @@ yargs
       })
     },
     (argv) => {
+      const settings = getSettings()
       // @ts-ignore
-      status(argv.name)
+      status(argv.name, settings)
     }
   )
   // backup
@@ -261,8 +241,9 @@ yargs
       })
     },
     (argv) => {
+      const settings = getSettings()
       // @ts-ignore
-      backup(argv.name)
+      backup(argv.name, settings)
     }
   )
 
